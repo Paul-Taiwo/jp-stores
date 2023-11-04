@@ -30,30 +30,32 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     image = CloudinaryField("image")
-    age = models.PositiveIntegerField()
-    birth_date = models.DateField()
-    phone = models.CharField(max_length=20)
+    age = models.PositiveIntegerField(blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
 
     GenderChoice = (
         ("M", "Male"),
         ("F", "Female"),
     )
-    gender = models.CharField(max_length=10, choices=GenderChoice)
+    gender = models.CharField(
+        max_length=10, choices=GenderChoice, blank=True, null=True
+    )
 
     # Address
-    address = models.CharField(max_length=100)
-    city = models.CharField(max_length=50)
-    lat = models.DecimalField(max_digits=9, decimal_places=6)
-    lng = models.DecimalField(max_digits=9, decimal_places=6)
-    postal_code = models.CharField(max_length=10)
-    state = models.CharField(max_length=20)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    lng = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    postal_code = models.CharField(max_length=10, blank=True, null=True)
+    state = models.CharField(max_length=20, blank=True, null=True)
 
     # Bank Information
-    card_expire = models.CharField(max_length=7)
-    card_number = models.CharField(max_length=16)
-    card_type = models.CharField(max_length=20)
-    currency = models.CharField(max_length=10)
-    iban = models.CharField(max_length=24)
+    card_expire = models.CharField(max_length=7, blank=True, null=True)
+    card_number = models.CharField(max_length=16, blank=True, null=True)
+    card_type = models.CharField(max_length=20, blank=True, null=True)
+    currency = models.CharField(max_length=10, blank=True, null=True)
+    iban = models.CharField(max_length=24, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -65,7 +67,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["email", "first_name", "last_name"]
 
     def __str__(self):
-        return f"{self.first_name} ${self.last_name} - {self.username}"
+        return f"{self.first_name} {self.last_name} - {self.username}"
 
 
 class Category(models.Model):
@@ -84,10 +86,12 @@ class Product(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
-    rating = models.DecimalField(max_digits=3, decimal_places=2)
+    discount_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0, blank=True, null=True
+    )
+    rating = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
     stock = models.PositiveIntegerField()
-    brand = models.CharField(max_length=50)
+    brand = models.CharField(max_length=50, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     images = models.ManyToManyField(ProductImage)
 
@@ -98,9 +102,9 @@ class Product(models.Model):
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.TextField()
-    rating = models.PositiveIntegerField()
-    date_added = models.DateTimeField()
+    comment = models.TextField(blank=True, null=True)
+    rating = models.PositiveIntegerField(blank=True, null=True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Review by {self.user.username} for {self.product.title}"

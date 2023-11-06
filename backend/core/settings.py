@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "jpstores",
     "cloudinary",
+    "django_seed",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [

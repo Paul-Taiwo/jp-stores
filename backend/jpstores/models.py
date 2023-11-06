@@ -90,7 +90,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.title}: {self.description}"
+        return self.title
 
 
 class ProductImage(models.Model):

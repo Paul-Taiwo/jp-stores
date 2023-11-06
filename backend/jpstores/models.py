@@ -45,17 +45,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Address
     address = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
-    lat = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    lng = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    lat = models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)
+    lng = models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)
     postal_code = models.CharField(max_length=10, blank=True, null=True)
     state = models.CharField(max_length=20, blank=True, null=True)
 
     # Bank Information
     card_expire = models.CharField(max_length=7, blank=True, null=True)
-    card_number = models.CharField(max_length=16, blank=True, null=True)
+    card_number = models.CharField(max_length=20, blank=True, null=True)
     card_type = models.CharField(max_length=20, blank=True, null=True)
-    currency = models.CharField(max_length=10, blank=True, null=True)
-    iban = models.CharField(max_length=24, blank=True, null=True)
+    currency = models.CharField(max_length=20, blank=True, null=True)
+    iban = models.CharField(max_length=34, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

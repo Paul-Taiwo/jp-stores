@@ -95,11 +95,19 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image_url = CloudinaryField("image")
-    thumbnail_url = CloudinaryField("thumbnail")
+    image = CloudinaryField("image")
+    thumbnail = CloudinaryField("thumbnail")
 
     def __str__(self):
         return f"Image for {self.product.title}"
+
+    @property
+    def image_url(self):
+        return f"https://res.cloudinary.com/pa15la4ta/{self.image}"
+
+    @property
+    def thumbnail_url(self):
+        return f"https://res.cloudinary.com/pa15la4ta/{self.thumbnail}"
 
 
 class ProductReview(models.Model):

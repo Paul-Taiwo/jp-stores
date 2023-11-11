@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, ProductImage
+from .models import Product, ProductImage, ProductReview, User
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -31,3 +31,58 @@ class ProductSerializer(serializers.ModelSerializer):
         images = self.product_images(product).first()
 
         return images.thumbnail_url
+
+    def to_representation(self, product):
+        representation = super().to_representation(product)
+
+        if self.context["request"].resolver_match.url_name == "products-detail":
+            reviews_data = ProductReview.objects.filter(product=product)
+            reviews_serializer = ProductReviewSerializer(reviews_data, many=True)
+            representation["reviews"] = reviews_serializer.data
+
+        return representation
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = [
+            "password",
+            "is_superuser",
+            "is_active",
+            "is_staff",
+            "groups",
+            "user_permissions",
+        ]
+
+
+class ProductReviewUserSerializer(UserSerializer):
+    class Meta(UserSerializer.Meta):
+        exclude = UserSerializer.Meta.exclude + [
+            "age",
+            "gender",
+            "last_login",
+            "email",
+            "birth_date",
+            "phone",
+            "address",
+            "city",
+            "lat",
+            "lng",
+            "postal_code",
+            "state",
+            "card_expire",
+            "card_number",
+            "card_type",
+            "currency",
+            "iban",
+            "date_joined",
+        ]
+
+
+class ProductReviewSerializer(serializers.ModelSerializer):
+    user = ProductReviewUserSerializer(read_only=True)
+
+    class Meta:
+        model = ProductReview
+        fields = "__all__"

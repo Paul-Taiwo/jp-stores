@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import Product, ProductImage, ProductReview, User
+from .models import Category, Product, ProductImage, ProductReview, User
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -97,4 +97,10 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductReview
+        fields = "__all__"
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
         fields = "__all__"

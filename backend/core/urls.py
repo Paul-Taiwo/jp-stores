@@ -23,13 +23,16 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from jpstores.views import CategoryViewSet, ProductsViewSet
+from jpstores.views import CategoryViewSet, ProductsViewSet, PurchaseHistoryViewSet
 
 
 router = DefaultRouter()
 
 router.register(r"products", ProductsViewSet, basename="products")
 router.register(r"categories", CategoryViewSet, basename="categories")
+router.register(
+    r"purchase-history", PurchaseHistoryViewSet, basename="purchase-history"
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

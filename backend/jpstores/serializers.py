@@ -1,7 +1,14 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import Category, Product, ProductImage, ProductReview, User
+from .models import (
+    Category,
+    Product,
+    ProductImage,
+    ProductReview,
+    User,
+    PurchaseHistory,
+)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -68,7 +75,7 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProductReviewUserSerializer(UserSerializer):
+class SimpleUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         exclude = UserSerializer.Meta.exclude + [
             "age",
@@ -92,8 +99,24 @@ class ProductReviewUserSerializer(UserSerializer):
         ]
 
 
+class SimpleProductSerializer(ProductSerializer):
+    class Meta(ProductSerializer.Meta):
+        fields = [
+            "id",
+            "category",
+            "images",
+            "thumbnail",
+            "title",
+            "description",
+            "price",
+            "discount_percentage",
+            "rating",
+            "brand",
+        ]
+
+
 class ProductReviewSerializer(serializers.ModelSerializer):
-    user = ProductReviewUserSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = ProductReview
@@ -104,3 +127,11 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
+
+
+class PurchaseHistorySerializer(serializers.ModelSerializer):
+    product = SimpleProductSerializer(read_only=True)
+
+    class Meta:
+        model = PurchaseHistory
+        exclude = ["user"]

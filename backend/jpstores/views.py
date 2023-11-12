@@ -1,11 +1,14 @@
-import rest_framework
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.permissions import IsAuthenticated
 
-from jpstores.models import Category, Product
-from jpstores.serializers import CategorySerializer, ProductSerializer
+from jpstores.models import Category, Product, PurchaseHistory
+from jpstores.serializers import (
+    CategorySerializer,
+    ProductSerializer,
+    PurchaseHistorySerializer,
+)
+from jpstores.utils import custom_paginate
 
 
 # Create your views here.
@@ -23,11 +26,18 @@ class CategoryViewSet(ModelViewSet):
     @action(detail=True, url_name="products", serializer_class=ProductSerializer)
     def products(self, request, pk=None):
         products = Product.objects.filter(category=pk)
-        page = self.paginate_queryset(products)
 
-        if page is not None:
-            serializers = self.get_serializer(page, many=True, read_only=True)
-            return self.get_paginated_response(serializers.data)
+        return custom_paginate(self, products)
 
-        serializers = self.get_serializer(products, many=True, read_only=True)
-        return Response(serializers.data, HTTP_200_OK)
+
+class PurchaseHistoryViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    queryset = PurchaseHistory.objects.all().order_by("id")
+    serializer_class = PurchaseHistorySerializer
+
+    def list(self, request, *args, **kwargs):
+        print("USER", request.user.id)
+        user = request.user.id
+        purchase_history = self.queryset.filter(user=2)
+
+        return custom_paginate(self, purchase_history)
